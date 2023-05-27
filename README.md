@@ -166,3 +166,8 @@ where salary = (
 
 ## Hard
 ## Others
+
+Caltech DE Exercises
+
+CMU Database SQL Assignment
+

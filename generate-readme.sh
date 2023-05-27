@@ -19,7 +19,6 @@ NEW_README='NEW_README.md'
 echo "## Easy" > $EASY_TEMPLATE
 echo "## Medium" > $MEDIUM_TEMPLATE
 echo "## Hard" > $HARD_TEMPLATE
-echo "## Others" > $OTHERS_TEMPLATE
 
 ####################################
 # ITERATING DIRS TO EXTRACT VALUES #
@@ -83,7 +82,9 @@ do
 			Hard*)
 				cat $TEMP_TEMPLATE >> $HARD_TEMPLATE ;;
 			*)
-				cat $TEMP_TEMPLATE >> $OTHERS_TEMPLATE ;;
+        echo "$level is not correct"
+        exit 1
+        ;;
 		esac
 	done
 done
@@ -108,4 +109,4 @@ mv $NEW_README README.md
 ############
 # CLEAN UP #
 ############
-rm $TEMP_TEMPLATE $EASY_TEMPLATE $MEDIUM_TEMPLATE $HARD_TEMPLATE $OTHERS_TEMPLATE 2> /dev/null
+rm $TEMP_TEMPLATE $EASY_TEMPLATE $MEDIUM_TEMPLATE $HARD_TEMPLATE 2> /dev/null
