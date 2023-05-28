@@ -61,7 +61,7 @@ do
 		
 		# https://superuser.com/a/1632938
 		# use // to replace all literal newline to escaped newline
-		sed -i "s|SQL|${sql//$'\n'/\\n}|" $TEMP_TEMPLATE
+		sed -i "s|QUERY|${sql//$'\n'/\\n}|" $TEMP_TEMPLATE
 		sed -i "s|PICTURE|${result}|" $TEMP_TEMPLATE
 		# sed adds extra whitespace... so, handle that...
 		sed -i "s| )|)|" $TEMP_TEMPLATE
