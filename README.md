@@ -41,7 +41,88 @@ join db_dept d
 
 ![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/0e9e1d02-83ac-43ab-951d-452e4a4a2925)
 
+
 ## Medium
+
+### Leetcode | Consecutive Numbers
+
+[Question:](https://leetcode.com/problems/consecutive-numbers/) Write an SQL query to find all numbers that appear at least three times consecutively. Return the result table in any order.
+
+```sql
+WITH stats AS (
+  SELECT num,
+         min(num) OVER three_consecutives AS min_num,
+         max(num) OVER three_consecutives AS max_num,
+         sum(num) OVER three_consecutives AS sum_num
+  FROM Logs
+  WINDOW three_consecutives AS
+    (ORDER BY id ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)
+)
+SELECT DISTINCT num AS ConsecutiveNums
+FROM stats
+WHERE min_num = max_num AND (num * 3) = sum_num
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/d4098dc5-c9a4-4f09-994a-f0aa50fa0522)
+
+
+
+### Leetcode | Department Highest Salary
+
+[Question:](https://leetcode.com/problems/department-highest-salary/) Write an SQL query to find employees who have the highest salary in each of the departments. Return the result table in any order.
+
+```sql
+WITH salary_ranked AS (
+  SELECT e.id
+         , rank() OVER (PARTITION BY e.departmentId ORDER BY e.salary DESC) AS salary_rank
+  FROM Employee e
+)
+SELECT d.name AS Department
+       , e.name AS Employee
+       , e.salary AS Salary
+FROM Employee e
+INNER JOIN Department d
+  ON e.departmentId = d.id
+INNER JOIN salary_ranked sr
+  ON e.id = sr.id
+WHERE sr.salary_rank = 1
+ORDER BY e.name
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/b794ab94-d25b-4f3c-9fe6-8bac5f01f135)
+
+
+
+### Leetcode | Rank Scores
+
+[Question:](https://leetcode.com/problems/rank-scores/) Write an SQL query to rank the scores. The ranking should be calculated according to the following rules: 1) The scores should be ranked from the highest to the lowest. 2) If there is a tie between two scores, both should have the same ranking. 3) After a tie, the next ranking number should be the next consecutive integer value. In other words, there should be no holes between ranks. Return the result table ordered by score in descending order.
+
+```sql
+SELECT score,
+       dense_rank() OVER (ORDER BY score DESC) AS "rank"
+FROM Scores
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/51422fbf-2248-4afc-82b7-48c729258267)
+
+
+
+### Leetcode | Second Highest Salary
+
+[Question:](https://leetcode.com/problems/second-highest-salary/description/) Write an SQL query to report the second highest salary from the Employee table. If there is no second highest salary, the query should report null.
+
+```sql
+SELECT MAX(salary) AS "SecondHighestSalary"
+FROM Employee
+WHERE salary NOT IN (
+  SELECT MAX(salary)
+  FROM Employee
+)
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/14219d4a-480b-40ed-920f-c4ba4e4d1483)
+
+
 
 ### Stratascratch | Acceptance Rate By Date
 
@@ -77,6 +158,7 @@ order by date asc
 ![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/c8587757-4d33-456e-b492-a4aee462c5ed)
 
 
+
 ### Stratascratch | Finding User Purchases
 
 [Question:](https://platform.stratascratch.com/coding/10322-finding-user-purchases?code_type=1) Write a query that'll identify returning active users. A returning active user is a user that has made a second purchase within 7 days of any other of their purchases. Output a list of user_ids of these returning active users.
@@ -101,6 +183,7 @@ order by 1
 ![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/fd71ca58-1d02-499e-9a92-f2accdf6cc29)
 
 
+
 ### Stratascratch | Most Profitable Companies
 
 [Question:](https://platform.stratascratch.com/coding/10354-most-profitable-companies?code_type=1) Find the 3 most profitable companies in the entire world. Output the result along with the corresponding company name. Sort the result based on profits in descending order.
@@ -114,6 +197,7 @@ limit 3
 ```
 
 ![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/5733e1f9-fda6-4f04-ad3c-a2fad8e277e8)
+
 
 
 ### Stratascratch | Users By Average Session Time
@@ -146,6 +230,7 @@ GROUP BY user_id
 ![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/589f3f37-3a2c-40b6-90ac-e5e84a66fa87)
 
 
+
 ### Stratascratch | Workers With The Highest Salaries
 
 [Question:](https://platform.stratascratch.com/coding/10353-workers-with-the-highest-salaries?code_type=1) You have been asked to find the job titles of the highest-paid employees. Your output should include the highest-paid title or multiple titles with the same salary.
@@ -163,6 +248,7 @@ where salary = (
 ```
 
 ![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/db8ff651-4dd0-46ec-b733-74a8008ebff4)
+
 
 
 ### Hackerrank | Occupations
@@ -188,6 +274,7 @@ GROUP BY rn
 ![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/fc5de448-fcc0-424f-a15a-629d94b0b347)
 
 
+
 ### Hackerrank | The Pads
 
 [Question:](https://www.hackerrank.com/challenges/the-pads/problem) Generate the following two result sets: 1) Query an alphabetically ordered list of all names in OCCUPATIONS, immediately followed by the first letter of each profession as a parenthetical (i.e.: enclosed in parentheses). For example: AnActorName(A), ADoctorName(D), AProfessorName(P), and ASingerName(S). 2) Query the number of ocurrences of each occupation in OCCUPATIONS. Sort the occurrences in ascending order, and output them in the following format: "There are a total of [occupation_count] [occupation]s." where [occupation_count] is the number of occurrences of an occupation in OCCUPATIONS and [occupation] is the lowercase occupation name. If more than one Occupation has the same [occupation_count], they should be ordered alphabetically.
@@ -204,7 +291,98 @@ ORDER BY t
 
 ![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/87374307-9d95-45e5-8ed8-045c7b325d4d)
 
+
 ## Hard
+
+### Leetcode | Department Top Three Salaries
+
+[Question:](https://leetcode.com/problems/department-top-three-salaries/) A company's executives are interested in seeing who earns the most money in each of the company's departments. A high earner in a department is an employee who has a salary in the top three unique salaries for that department. Write an SQL query to find the employees who are high earners in each of the departments. Return the result table in any order.
+
+```sql
+WITH salary_ranks AS (
+  SELECT d.name AS Department,
+         e.name AS Employee,
+         e.salary AS Salary,
+         dense_rank() OVER (PARTITION BY e.departmentId ORDER BY e.salary DESC) ranks
+  FROM Employee e
+    INNER JOIN Department d
+    ON e.departmentId = d.id
+)
+SELECT Department, Employee, Salary
+FROM salary_ranks
+WHERE ranks <= 3
+ORDER BY Department, Salary
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/5cebe467-51fb-4106-b520-48dc3dd0f18b)
+
+
+
+### Leetcode | Human Traffic Of Stadium
+
+[Question:](https://leetcode.com/problems/human-traffic-of-stadium/) Write an SQL query to display the records with three or more rows with consecutive id's, and the number of people is greater than or equal to 100 for each. Return the result table ordered by visit_date in ascending order.
+
+```sql
+WITH
+filtered AS (
+    SELECT
+        *
+    FROM Stadium
+    WHERE people >= 100
+),
+ordered_id AS (
+    SELECT
+        *,
+        id - ROW_NUMBER() OVER (ORDER BY id) AS id_ordering
+    FROM filtered
+)
+SELECT id, visit_date, people
+FROM ordered_id
+WHERE id_ordering IN (
+    SELECT id_ordering
+    FROM ordered_id
+    GROUP BY 1
+    HAVING COUNT(1) >= 3
+)
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/0fffaecc-1f19-4255-8e2d-55ccacfe66f0)
+
+
+
+### Leetcode | Trips And Users
+
+[Question:](https://leetcode.com/problems/trips-and-users/) The cancellation rate is computed by dividing the number of canceled (by client or driver) requests with unbanned users by the total number of requests with unbanned users on that day. Write a SQL query to find the cancellation rate of requests with unbanned users (both client and driver must not be banned) each day between "2013-10-01" and "2013-10-03". Round Cancellation Rate to two decimal points. Return the result table in any order.
+
+```sql
+SELECT
+    t.request_at AS Day,
+    ROUND(
+        SUM(
+            CASE
+                WHEN status = 'completed' THEN 0
+                ELSE 1
+            END
+       ) / COUNT(*)
+    , 2) AS 'Cancellation Rate'
+FROM Trips t
+    INNER JOIN Users uc
+        ON t.client_id = uc.users_id
+    INNER JOIN Users ud
+        ON t.driver_id = ud.users_id
+WHERE
+    uc.banned = 'No' AND ud.banned = 'No'
+    AND uc.role = 'client' AND ud.role = 'driver'
+    AND request_at BETWEEN '2013-10-01' AND '2013-10-03'
+GROUP BY
+    request_at
+ORDER BY
+    Day ASC
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/1a1d05b2-eca1-4986-8073-eca2d8e25836)
+
+
 ## Others
 
 Caltech DE Exercises
