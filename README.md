@@ -385,7 +385,11 @@ ORDER BY
 
 ## Others
 
-Caltech DE Exercises
+### Caltech DE Exercises
 
-CMU Database SQL Assignment
+Link to Caltech DE Exercises repo
+
+### CMU Database SQL Assignment
+
+A homework from [Carnegie Mellon University Database Course (Fall 2021)](https://15445.courses.cs.cmu.edu). I used this to refresh my SQL knowledge and certain advanced SQL features I didn't know before. Also, learned to use SQLite which I found to be really useful later on. There's a [video lecture to learn the materials](https://youtu.be/B2fWjPGh-EU) before working on this homework
 

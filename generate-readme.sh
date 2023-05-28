@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# all directory names
-DIRS=$(find . -mindepth 1 -type d -not -path '*/.*' -printf "%f\n")
+# all directory names, ignoring cmu-db-sql
+DIRS=$(find . -mindepth 1 -type d \( -name .git -o -name cmu-db-sql \) -prune -o -type d -printf "%f\n")
 
 ###################
 # SETUP TEMPLATES #
