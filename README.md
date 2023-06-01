@@ -1,17 +1,8 @@
 # Doing SQL interview prep in various platforms
 
-Insert table here
+Mostly randomly doing problems here and there, and sometimes following [this DE study guide](https://docs.google.com/spreadsheets/d/1GOO4s1NcxCR8a44F0XnsErz5rYDxNbHAHznu4pJMRkw/edit#gid=0)
 
-Type: Strata Scratch, Leetcode, Hackerrank
-
-Target: 55 (21 Katie's + 25 (first SQL Sundays initialization) + 9 (late May update))
-
-Timeline:
-
-- (1st April) It's first initialized in 11th October, and I need to catch up for 25 weeks as of this README is written
-- (26th May) It's 8 or 9 weeks more now...
-
-**Note: this README is generated.**
+**Note: this README is generated**
 
 ## Table of Contents
 
