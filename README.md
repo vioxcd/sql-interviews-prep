@@ -84,6 +84,76 @@ ORDER BY e.name
 
 
 
+### Leetcode | Exchange Seats
+
+[Question:](https://leetcode.com/problems/exchange-seats) (**Broken test case**). Write an SQL query to swap the seat id of every two consecutive students. If the number of students is odd, the id of the last student is not swapped. Return the result table ordered by id in ascending order.
+
+```sql
+with
+id_mod_id as (
+  select id, student, id + mod(id, 2) as cc
+  from seat
+)
+select
+  row_number() over (order by cc, id desc) as id, student
+from id_mod_id
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/dfd146ef-4ab5-4dbd-ae00-a0329b84c6fa)
+
+
+
+### Leetcode | Game Play Analysis Iv
+
+[Question:](https://leetcode.com/problems/game-play-analysis-iv) Write an SQL query to report the fraction of players that logged in again on the day after the day they first logged in, rounded to 2 decimal places. In other words, you need to count the number of players that logged in for at least two consecutive days starting from their first login date, then divide that number by the total number of players.
+
+```sql
+with
+earliest_login as (
+    select
+        player_id,
+        date(str_to_date(min(event_date), '%Y-%m-%d')) as event_date
+    from activity
+    group by 1
+)
+
+select
+    round(count(1) / (select count(1) from earliest_login), 2) as fraction
+from earliest_login a1
+join activity a2
+    on a1.player_id = a2.player_id
+        and a1.event_date = a2.event_date - INTERVAL 1 DAY
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/0e04b110-5cdb-4782-8d55-4871f2d0a8b3)
+
+
+
+### Leetcode | Nth Highest Salary
+
+[Question:](https://leetcode.com/problems/nth-highest-salary) Write an SQL query to report the nth highest salary from the Employee table. If there is no nth highest salary, the query should report null.
+
+```sql
+CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
+BEGIN
+  RETURN (
+      select distinct salary
+      from (
+          select
+            salary,
+            dense_rank() over (order by salary desc) as row_num
+          from
+            employee
+     ) as t
+      where row_num = N
+ );
+END
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/c98af11c-2db2-4361-879b-2f37dd6a0df0)
+
+
+
 ### Leetcode | Rank Scores
 
 [Question:](https://leetcode.com/problems/rank-scores/) Write an SQL query to rank the scores. The ranking should be calculated according to the following rules: 1) The scores should be ranked from the highest to the lowest. 2) If there is a tie between two scores, both should have the same ranking. 3) After a tie, the next ranking number should be the next consecutive integer value. In other words, there should be no holes between ranks. Return the result table ordered by score in descending order.
@@ -242,6 +312,30 @@ where salary = (
 
 
 
+### Hackerrank | Harry Potter And Wands
+
+[Question:](https://www.hackerrank.com/challenges/harry-potter-and-wands) Hermione decides the best way to choose is by determining the minimum number of gold galleons needed to buy each non-evil wand of high power and age. Write a query to print the id, age, coins_needed, and power of the wands that Ron's interested in, sorted in order of descending power. If more than one wand has same power, sort the result in order of descending age.
+
+```sql
+select
+    w.id, wp.age, w.coins_needed, w.power
+from wands w
+left join wands_property wp
+    using(code)
+where wp.is_evil = 0
+    and w.coins_needed = (
+        select min(w1.coins_needed)
+        from wands w1
+        where w1.code = w.code
+            and w1.power = w.power
+   )
+order by w.power desc, wp.age desc
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/a0f653d5-ea93-4eb0-9464-3e082b8f9cf4)
+
+
+
 ### Hackerrank | Occupations
 
 [Question:](https://www.hackerrank.com/challenges/occupations/problem) Pivot the Occupation column in OCCUPATIONS so that each Name is sorted alphabetically and displayed underneath its corresponding Occupation. The output column headers should be Doctor, Professor, Singer, and Actor, respectively. Note: Print NULL when there are no more names corresponding to an occupation.
@@ -263,6 +357,78 @@ GROUP BY rn
 ```
 
 ![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/fc5de448-fcc0-424f-a15a-629d94b0b347)
+
+
+
+### Hackerrank | Placements
+
+[Question:](https://www.hackerrank.com/challenges/placements) You are given three tables: Students, Friends and Packages. Students contains two columns: ID and Name. Friends contains two columns: ID and Friend_ID (ID of the ONLY best friend). Packages contains two columns: ID and Salary. Write a query to output the names of those students whose best friends got offered a higher salary than them. Names must be ordered by the salary amount offered to the best friends. It is guaranteed that no two students got same salary offer.
+
+```sql
+select s.name
+from students s  /* the student's name */
+join friends f  /* their friends' id */
+    on s.id = f.id
+join packages ps  /* the student's salary */
+    on s.id = ps.id
+join packages pf  /* the student's friends' salary */
+    on f.friend_id = pf.id
+where pf.salary > ps.salary
+order by pf.salary
+```
+
+![Result]()
+
+
+
+### Hackerrank | Print Prime Numbers
+
+[Question:](https://www.hackerrank.com/challenges/print-prime-numbers) Write a query to print all prime numbers less than or equal to 1000. Print your result on a single line, and use the ampersand (DESCRIPTION) character as your separator (instead of a space).
+
+```sql
+/* use Oracle */
+with
+x as (
+    select level + 1 x
+    from dual
+    connect by level <= 1000
+)
+select
+
+    listagg(x.x, 'QUERY') within group (order by x.x) as prime_numbers
+from x
+where not exists (
+    select 1 from x y
+    where x.x > y.x and remainder( x.x, y.x) = 0
+)
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/2f5a4045-3117-4f23-9890-14d0522973fc)
+
+
+
+### Hackerrank | Symmetric Pairs
+
+[Question:](https://www.hackerrank.com/challenges/symmetric-pairs) You are given a table, Functions, containing two columns: X and Y. Two pairs (X1, Y1) and (X2, Y2) are said to be symmetric pairs if X1 = Y2 and X2 = Y1. Write a query to output all such symmetric pairs in ascending order by the value of X. List the rows such that X1 ≤ Y1.
+
+```sql
+with
+with_id as (
+    select
+        *,
+        row_number() over () as id
+    from functions
+)
+select distinct least(f1.X, f2.X) as X, greatest(f2.X, f2.Y) as Y
+from with_id f1
+join with_id f2
+    on f1.X = f2.Y
+        and f1.Y = f2.X
+        and f1.id != f2.id
+order by 1, 2
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/7a730fb9-3fb3-4970-a4f5-be0591a79ef0)
 
 
 
