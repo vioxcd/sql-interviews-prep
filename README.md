@@ -312,6 +312,66 @@ where salary = (
 
 
 
+### Hackerrank | Binary Search Tree 1
+
+[Question:](https://www.hackerrank.com/challenges/binary-search-tree-1) You are given a table, BST, containing two columns: N and P, where N represents the value of a node in Binary Tree, and P is the parent of N. Write a query to find the node type of Binary Tree ordered by the value of the node. Output one of the following for each node: Root: If node is root node. Leaf: If node is leaf node. Inner: If node is neither root nor leaf node.
+
+```sql
+select distinct
+    bst1.n,
+    case
+        when bst1.p is null then 'Root'
+        when bst2.p is null then 'Leaf'
+        else 'Inner'
+    end as node_type
+from bst bst1
+left join bst bst2
+    on bst1.n = bst2.p
+order by bst1.n
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/e229b0f7-48a5-4770-b7a3-3def71316d20)
+
+
+
+### Hackerrank | Challenges
+
+[Question:](https://www.hackerrank.com/challenges/challenges) Write a query to print the hacker_id, name, and the total number of challenges created by each student. Sort your results by the total number of challenges in descending order. If more than one student created the same number of challenges, then sort the result by hacker_id. If more than one student created the same number of challenges and the count is less than the maximum number of challenges created, then exclude those students from the result.
+
+```sql
+with
+calculated_hacker_challenges as (
+    select
+        hacker_id, name, count(1) as total_challenges
+    from hackers h
+    join challenges c
+        using (hacker_id)
+    group by 1, 2
+),
+
+grouped_total_challenges as (
+    select total_challenges
+    from calculated_hacker_challenges
+    where total_challenges < (
+        select max(total_challenges) from calculated_hacker_challenges
+   )
+    group by total_challenges
+    having count(1) > 1
+)
+
+select *
+from calculated_hacker_challenges
+where
+    total_challenges not in (
+        select total_challenges from grouped_total_challenges
+   )
+order by total_challenges desc, hacker_id asc
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/d56013cc-d376-42b8-9cef-a34b705cd9f4)
+
+
+
 ### Hackerrank | Harry Potter And Wands
 
 [Question:](https://www.hackerrank.com/challenges/harry-potter-and-wands) Hermione decides the best way to choose is by determining the minimum number of gold galleons needed to buy each non-evil wand of high power and age. Write a query to print the id, age, coins_needed, and power of the wands that Ron's interested in, sorted in order of descending power. If more than one wand has same power, sort the result in order of descending age.
@@ -466,6 +526,49 @@ order by g.grade desc, s.name, s.marks
 ```
 
 ![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/b3bc7c6b-8060-43fc-9c03-aafa57029925)
+
+
+
+### Hackerrank | Weather Observation 18
+
+[Question:](https://www.hackerrank.com/challenges/weather-observation-station-18) Consider P1(a, b) and P2(c, d) to be two points on a 2D plane: a happens to equal the minimum value in Northern Latitude (LAT_N in STATION). b happens to equal the minimum value in Western Longitude (LONG_W in STATION). c happens to equal the maximum value in Northern Latitude (LAT_N in STATION). d happens to equal the maximum value in Western Longitude (LONG_W in STATION). Query the Manhattan Distance between points P1 and P2 and and round it to a scale of 4 decimal places.
+
+```sql
+SELECT
+    ROUND(
+        ABS(MAX(LAT_N) - MIN(LAT_N)) + ABS(MAX(LONG_W) - MIN(LONG_W))
+    , 4)
+FROM station
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/8be3ddf6-cdf5-46e8-b2b4-3a5c19c80a88)
+
+
+
+### Hackerrank | Weather Observation 19
+
+[Question:](https://www.hackerrank.com/challenges/weather-observation-station-19) Consider P1(a, b) and P2(c, d) to be two points on a 2D plane: a happens to equal the minimum value in Northern Latitude (LAT_N in STATION). b happens to equal the minimum value in Western Longitude (LONG_W in STATION). c happens to equal the maximum value in Northern Latitude (LAT_N in STATION). d happens to equal the maximum value in Western Longitude (LONG_W in STATION). Query the Eucliedean Distance between points P1 and P2 and and round it to a scale of 4 decimal places.
+
+```sql
+SELECT
+    /*
+    MIN(LAT_N) AS a,
+    MAX(LAT_N) AS b,
+    MIN(LONG_W) AS c,
+    MAX(LONG_W) AS d
+    */
+    ROUND(
+        SQRT(
+            POW(MAX(LAT_N) - MIN(LAT_N), 2)
+            +
+            POW(MAX(LONG_W) - MIN(LONG_W), 2)
+       )
+        , 4
+   )
+FROM station
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/0d58ecb2-8e76-4f61-966e-ba1069692a8c)
 
 
 ## Hard
