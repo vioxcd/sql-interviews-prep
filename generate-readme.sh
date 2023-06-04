@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # all directory names, ignoring cmu-db-sql
-DIRS=$(find . -mindepth 1 -type d \( -name .git -o -name cmu-db-sql \) -prune -o -type d -printf "%f\n")
+DIRS=$(find . -mindepth 1 -type d \( -name .git -o -name cmu-db-sql -o -name python \) -prune -o -type d -printf "%f\n")
 
 ###################
 # SETUP TEMPLATES #
