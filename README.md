@@ -220,6 +220,24 @@ order by date asc
 
 
 
+### Stratascratch | Customer Revenue In March
+
+[Question:](https://platform.stratascratch.com/coding/9782-customer-revenue-in-march) Calculate the total revenue from each customer in March 2019. Include only customers who were active in March 2019. Output the revenue along with the customer id and sort the results based on the revenue in descending order.
+
+```sql
+select
+    cust_id
+    ,sum(total_order_cost) as revenue
+from orders
+where extract(month from order_date) = 3
+group by 1
+order by 2 desc
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/142a0279-2f64-416b-bcbf-75046ffd1f59)
+
+
+
 ### Stratascratch | Finding User Purchases
 
 [Question:](https://platform.stratascratch.com/coding/10322-finding-user-purchases?code_type=1) Write a query that'll identify returning active users. A returning active user is a user that has made a second purchase within 7 days of any other of their purchases. Output a list of user_ids of these returning active users.
@@ -245,6 +263,66 @@ order by 1
 
 
 
+### Stratascratch | Highest Cost Orders
+
+[Question:](https://platform.stratascratch.com/coding/9915-highest-cost-orders) Find the customer with the highest daily total order cost between 2019-02-01 to 2019-05-01. If customer had more than one order on a certain day, sum the order costs on daily basis. Output customer's first name, total cost of their items, and the date. For simplicity, you can assume that every first name in the dataset is unique.
+
+```sql
+with
+calculated_order_cost as (
+    select
+        c.first_name
+        ,o.order_date
+        ,sum(o.total_order_cost) as total_order_cost
+    from customers c
+    join orders o
+        on c.id = o.cust_id
+    where o.order_date between '2019-02-01' and '2019-05-01'
+    group by c.first_name, o.order_date
+)
+
+select
+    first_name
+    ,total_order_cost as highest_total_order_cost
+    ,order_date
+from calculated_order_cost
+where total_order_cost = (select max(total_order_cost) from calculated_order_cost)
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/f6668553-d7fe-4f21-b756-2514cd363d9e)
+
+
+
+### Stratascratch | Highest Energy Consumption
+
+[Question:](https://platform.stratascratch.com/coding/10064-highest-energy-consumption) Find the date with the highest total energy consumption from the Meta/Facebook data centers. Output the date along with the total energy consumption across all data centers.
+
+```sql
+with
+all_region as (
+    select
+        date,
+        sum(consumption) as total_consumption
+    from (
+        select * from fb_eu_energy
+        union all
+        select * from fb_asia_energy
+        union all
+        select * from fb_na_energy
+   ) t
+    group by date
+)
+select
+    date,
+    total_consumption as highest_consumption
+from all_region
+where total_consumption = (select max(total_consumption) from all_region)
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/c7f974bf-03fc-4209-9c12-f308843ec1ab)
+
+
+
 ### Stratascratch | Most Profitable Companies
 
 [Question:](https://platform.stratascratch.com/coding/10354-most-profitable-companies?code_type=1) Find the 3 most profitable companies in the entire world. Output the result along with the corresponding company name. Sort the result based on profits in descending order.
@@ -258,6 +336,41 @@ limit 3
 ```
 
 ![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/5733e1f9-fda6-4f04-ad3c-a2fad8e277e8)
+
+
+
+### Stratascratch | Number Of Violations
+
+[Question:](https://platform.stratascratch.com/coding/9728-inspections-that-resulted-in-violations) You're given a dataset of health inspections. Count the number of violation in an inspection in 'Roxanne Cafe' for each year. If an inspection resulted in a violation, there will be a value in the 'violation_id' column. Output the number of violations by year in ascending order.
+
+```sql
+select
+    extract(year from inspection_date) as year,
+    count(violation_id) as number_of_violations
+from sf_restaurant_health_violations
+where business_name = 'Roxanne Cafe'
+group by 1
+order by 1 asc
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/a2dc51ec-86ad-4240-bfea-aa969d759ee3)
+
+
+
+### Stratascratch | Reviews Of Categories
+
+[Question:](https://platform.stratascratch.com/coding/10049-reviews-of-categories) Find the top business categories based on the total number of reviews. Output the category along with the total number of reviews. Order by total reviews in descending order.
+
+```sql
+;select
+    unnest(string_to_array(categories, ';')) as category
+    ,sum(review_count) as category_review_count
+from yelp_business
+group by 1
+order by 2 desc
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/d4a2c63e-30c4-48e9-b4f7-146e82c7c413)
 
 
 
