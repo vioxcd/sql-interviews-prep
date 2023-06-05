@@ -323,6 +323,113 @@ where total_consumption = (select max(total_consumption) from all_region)
 
 
 
+### Stratascratch | Host Popularity Rental Prices
+
+[Question:](https://platform.stratascratch.com/coding/9632-host-popularity-rental-prices) You’re given a table of rental property searches by users. The table consists of search results and outputs host information for searchers. Find the minimum, average, maximum rental prices for each host’s popularity rating. The host’s popularity rating is defined as below: 0 reviews: New, 1 to 5 reviews: Rising, 6 to 15 reviews: Trending Up, 16 to 40 reviews: Popular, more than 40 reviews: Hot. Tip: The id column in the table refers to the search ID. You'll need to create your own host_id by concating price, room_type, host_since, zipcode, and number_of_reviews. Output host popularity rating and their minimum, average and maximum rental prices.
+
+```sql
+with
+host_popularity_details as (
+    select
+        case
+            when number_of_reviews = 0 then 'New'
+            when number_of_reviews <= 5 then 'Rising'
+            when number_of_reviews <= 15 then 'Trending Up'
+            when number_of_reviews <= 40 then 'Popular'
+            else 'Hot'
+        end as host_popularity
+        ,price
+    from (
+        select distinct
+            price,
+            room_type,
+            host_since,
+            zipcode,
+            number_of_reviews
+        from airbnb_host_searches
+   ) t
+)
+select
+    host_popularity
+    ,min(price) as min_price
+    ,avg(price) as avg_price
+    ,max(price) as max_price
+from host_popularity_details
+group by host_popularity
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/6b2e38cd-eac4-42f3-869b-fe30e71a449b)
+
+
+
+### Stratascratch | Marketing Campaign Success
+
+[Question:](https://platform.stratascratch.com/coding/514-marketing-campaign-success-advanced) You have a table of in-app purchases by user. Users that make their first in-app purchase are placed in a marketing campaign where they see call-to-actions for more in-app purchases. Find the number of users that made additional in-app purchases due to the success of the marketing campaign. The marketing campaign doesn't start until one day after the initial in-app purchase so users that only made one or multiple purchases on the first day do not count, nor do we count users that over time purchase only the products they purchased on the first day.
+
+```sql
+with
+known_first_purchase_date as (
+    select
+        user_id
+        ,created_at
+        ,product_id
+        ,first_value(created_at) over (partition by user_id
+                                        order by created_at)
+                                        as first_purchase_date
+    from marketing_campaign
+),
+
+products_bought_in_first_purchase_date as (
+    select
+        user_id
+        ,array_agg(product_id) as bought_products
+    from known_first_purchase_date
+    where created_at = first_purchase_date
+    group by user_id
+)
+
+select
+    count (distinct user_id)
+from known_first_purchase_date fpd
+    join products_bought_in_first_purchase_date pfpd
+    using (user_id)
+where
+    fpd.created_at > fpd.first_purchase_date
+    and not product_id = any(bought_products)
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/447fa27b-5bc3-430a-9245-893f827f9361)
+
+
+
+### Stratascratch | Monthly Percentage Difference
+
+[Question:](https://platform.stratascratch.com/coding/10319-monthly-percentage-difference) Given a table of purchases by date, calculate the month-over-month percentage change in revenue. The output should include the year-month date (YYYY-MM) and percentage change, rounded to the 2nd decimal point, and sorted from the beginning of the year to the end of the year. The percentage change column will be populated from the 2nd month forward and can be calculated as ((this month's revenue - last month's revenue) / by last month's revenue) * 100.
+
+```sql
+with
+augmented_transactions as (
+    select
+        date_trunc('month', created_at) as year_month
+        ,sum(value) as revenue
+        ,lag(sum(value)) over (order by date_trunc('month', created_at)) as last_month_revenue
+    from sf_transactions
+    group by date_trunc('month', created_at)
+)
+
+select
+    concat_ws('-', extract(year from year_month), lpad(extract(month from year_month)::text, 2, '0')) as year_month_format
+    ,round(
+        ((revenue - last_month_revenue)::numeric / last_month_revenue) * 100, 2
+   ) as revenue_diff_pct
+from augmented_transactions
+order by year_month
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/55b3a8bd-ae92-45dc-b504-63fcbffb46d7)
+
+
+
 ### Stratascratch | Most Profitable Companies
 
 [Question:](https://platform.stratascratch.com/coding/10354-most-profitable-companies?code_type=1) Find the 3 most profitable companies in the entire world. Output the result along with the corresponding company name. Sort the result based on profits in descending order.
@@ -354,6 +461,60 @@ order by 1 asc
 ```
 
 ![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/a2dc51ec-86ad-4240-bfea-aa969d759ee3)
+
+
+
+### Stratascratch | Popularity Percentage
+
+[Question:](https://platform.stratascratch.com/coding/10284-popularity-percentage) Find the popularity percentage for each user on Meta/Facebook. The popularity percentage is defined as the total number of friends the user has divided by the total number of users on the platform, then converted into a percentage by multiplying by 100. Output each user along with their popularity percentage. Order records in ascending order by user id. The 'user1' and 'user2' column are pairs of friends.
+
+```sql
+with
+reordered_ff as (
+    select user1, user2 from facebook_friends
+    union
+    select user2 as user1, user1 as user2 from facebook_friends
+)
+
+select
+    user1,
+    (count(1)::numeric /
+        (select count(distinct user1) from reordered_ff)) * 100
+        as popularity_percentage
+from reordered_ff
+group by 1
+order by 1
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/f6db5236-4027-4b4b-a48e-31b18424dc08)
+
+
+
+### Stratascratch | Premium Vs Freemium
+
+[Question:](https://platform.stratascratch.com/coding/10300-premium-vs-freemium) Find the total number of downloads for paying and non-paying users by date. Include only records where non-paying customers have more downloads than paying customers. The output should be sorted by earliest date first and contain 3 columns date, non-paying downloads, paying downloads.
+
+```sql
+with
+download_fct as (
+    select
+        date
+        ,sum(case when paying_customer = 'no' then downloads else 0 end) as non_paying
+        ,sum(case when paying_customer = 'yes' then downloads else 0 end) as paying
+    from ms_user_dimension u
+        join ms_acc_dimension a
+            on u.acc_id = a.acc_id
+        join ms_download_facts d
+        on u.user_id = d.user_id
+    group by date
+    order by date asc
+)
+select *
+from download_fct
+where non_paying > paying
+```
+
+![Result](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/74a3da1e-c510-4648-baae-ac5161f393b1)
 
 
 
