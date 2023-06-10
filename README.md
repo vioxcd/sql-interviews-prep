@@ -938,11 +938,29 @@ where non_paying > paying
 
 ## Others
 
-### Caltech DE Exercises
-
-Link to Caltech DE Exercises repo
-
 ### CMU Database SQL Assignment
 
 A homework from [Carnegie Mellon University Database Course (Fall 2021)](https://15445.courses.cs.cmu.edu). I used this to refresh my SQL knowledge and certain advanced SQL features I didn't know before. Also, learned to use SQLite which I found to be really useful later on. There's a [video lecture to learn the materials](https://youtu.be/B2fWjPGh-EU) before working on this homework
+
+### Caltech DE Exercises
+
+Exercises from [Caltech Data Engineering](https://github.com/vioxcd/caltech-de-exercises/) course
+
+It covers several case study involving basic data cleaning and transformation using SQL and NoSQL, investigating query performance, and dealing with nested data with more advanced analysis
+
+### Stratascratch Business Analysis
+
+A business analysis case from Stratascratch, [Insights from Failed Orders](https://platform.stratascratch.com/data-projects/insights-failed-orders)
+
+This one's not an SQL project, although I'm sure you can use SQL to solve this. (I use pyspark for this)
+
+The analysis uses Gett data, previously known as GetTaxi, a technology platform focused on corporate Ground Transportation Management
+
+The analysis focuses on reason for orders' failure, for example, what's the reason? Is there certain hours when failure happens? It also goes into average what's the average cancellation time of orders? What's the estimated time arrival (ETA) by the hours?
+
+With a bonus question about plotting failures in the map. Here's how my map looks like:
+
+![A choropleth map built using H3 and Folium library](https://github.com/vioxcd/sql-interviews-prep/assets/31486724/d2cf442b-e098-4d2c-adc2-31442e2213fe)
+
+My analysis can accessed through this [colab notebook](https://colab.research.google.com/drive/1upxBM7mTrxvt-ftKFvla6IsBft9lk7cB?usp=sharing)
 
