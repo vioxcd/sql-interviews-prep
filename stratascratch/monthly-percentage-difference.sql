@@ -1,7 +1,7 @@
 -- Link: https://platform.stratascratch.com/coding/10319-monthly-percentage-difference
 -- Level: Hard
 -- Description: Given a table of purchases by date, calculate the month-over-month percentage change in revenue. The output should include the year-month date (YYYY-MM) and percentage change, rounded to the 2nd decimal point, and sorted from the beginning of the year to the end of the year. The percentage change column will be populated from the 2nd month forward and can be calculated as ((this month's revenue - last month's revenue) / by last month's revenue) * 100.
--- Result: https://github.com/vioxcd/sql-interviews-prep/assets/31486724/55b3a8bd-ae92-45dc-b504-63fcbffb46d7
+-- Result: https://github.com/vioxcd/sql-interviews-prep/assets/31486724/faf298cf-4109-44cd-a15a-2ea98f73358a
 with
 augmented_transactions as (
     select

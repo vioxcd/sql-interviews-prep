@@ -1,7 +1,7 @@
 -- Link: https://leetcode.com/problems/department-highest-salary/
 -- Level: Medium
 -- Description: Write an SQL query to find employees who have the highest salary in each of the departments. Return the result table in any order.
--- Result: https://github.com/vioxcd/sql-interviews-prep/assets/31486724/b794ab94-d25b-4f3c-9fe6-8bac5f01f135
+-- Result: https://github.com/vioxcd/sql-interviews-prep/assets/31486724/71c1c0cb-c5dd-46e3-bd54-5c37ba8367a6
 WITH salary_ranked AS (
   SELECT e.id
          , rank() OVER (PARTITION BY e.departmentId ORDER BY e.salary DESC) AS salary_rank

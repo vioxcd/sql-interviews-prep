@@ -1,7 +1,7 @@
 -- Link: https://platform.stratascratch.com/coding/10064-highest-energy-consumption
 -- Level: Medium
 -- Description: Find the date with the highest total energy consumption from the Meta/Facebook data centers. Output the date along with the total energy consumption across all data centers.
--- Result: https://github.com/vioxcd/sql-interviews-prep/assets/31486724/c7f974bf-03fc-4209-9c12-f308843ec1ab
+-- Result: https://github.com/vioxcd/sql-interviews-prep/assets/31486724/503cbacf-2b48-45e5-b641-a344cfbc6547
 with
 all_region as (
     select

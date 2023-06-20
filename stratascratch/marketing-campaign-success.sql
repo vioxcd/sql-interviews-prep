@@ -1,7 +1,7 @@
 -- Link: https://platform.stratascratch.com/coding/514-marketing-campaign-success-advanced
 -- Level: Hard
 -- Description: You have a table of in-app purchases by user. Users that make their first in-app purchase are placed in a marketing campaign where they see call-to-actions for more in-app purchases. Find the number of users that made additional in-app purchases due to the success of the marketing campaign. The marketing campaign doesn't start until one day after the initial in-app purchase so users that only made one or multiple purchases on the first day do not count, nor do we count users that over time purchase only the products they purchased on the first day.
--- Result: https://github.com/vioxcd/sql-interviews-prep/assets/31486724/447fa27b-5bc3-430a-9245-893f827f9361
+-- Result: https://github.com/vioxcd/sql-interviews-prep/assets/31486724/388aa3ee-63d1-4418-9a35-16a410d18f53
 with
 known_first_purchase_date as (
     select

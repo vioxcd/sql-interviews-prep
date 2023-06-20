@@ -1,7 +1,7 @@
 -- Link: https://platform.stratascratch.com/coding/10300-premium-vs-freemium
 -- Level: Hard
 -- Description: Find the total number of downloads for paying and non-paying users by date. Include only records where non-paying customers have more downloads than paying customers. The output should be sorted by earliest date first and contain 3 columns date, non-paying downloads, paying downloads.
--- Result: https://github.com/vioxcd/sql-interviews-prep/assets/31486724/74a3da1e-c510-4648-baae-ac5161f393b1
+-- Result: https://github.com/vioxcd/sql-interviews-prep/assets/31486724/1e67e7f4-ad2e-4634-b1f7-f96b22e8f6cc
 with
 download_fct as (
     select

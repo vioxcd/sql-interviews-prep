@@ -1,7 +1,7 @@
 -- Link: https://platform.stratascratch.com/coding/10308-salaries-differences?code_type=1
 -- Level: Easy
 -- Description: Write a query that calculates the difference between the highest salaries found in the marketing and engineering departments. Output just the absolute difference in salaries.
--- Result: https://github.com/vioxcd/sql-interviews-prep/assets/31486724/0e9e1d02-83ac-43ab-951d-452e4a4a2925
+-- Result: https://github.com/vioxcd/sql-interviews-prep/assets/31486724/fa870836-6b9a-4bc8-a043-2070662676f4
 select
     abs(
         max(case when d.department = 'marketing' then e.salary else 0 end)

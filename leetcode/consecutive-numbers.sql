@@ -1,7 +1,7 @@
 -- Link: https://leetcode.com/problems/consecutive-numbers/
 -- Level: Medium
 -- Description: Write an SQL query to find all numbers that appear at least three times consecutively. Return the result table in any order.
--- Result: https://github.com/vioxcd/sql-interviews-prep/assets/31486724/d4098dc5-c9a4-4f09-994a-f0aa50fa0522
+-- Result: https://github.com/vioxcd/sql-interviews-prep/assets/31486724/f483413a-8501-4bfd-9c75-5370e7ea2f25
 WITH stats AS (
   SELECT num,
          min(num) OVER three_consecutives AS min_num,

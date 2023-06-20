@@ -1,7 +1,7 @@
 -- Link: https://www.hackerrank.com/challenges/challenges
 -- Level: Medium
 -- Description: Write a query to print the hacker_id, name, and the total number of challenges created by each student. Sort your results by the total number of challenges in descending order. If more than one student created the same number of challenges, then sort the result by hacker_id. If more than one student created the same number of challenges and the count is less than the maximum number of challenges created, then exclude those students from the result.
--- Result: https://github.com/vioxcd/sql-interviews-prep/assets/31486724/d56013cc-d376-42b8-9cef-a34b705cd9f4
+-- Result: https://github.com/vioxcd/sql-interviews-prep/assets/31486724/aa6f9451-e552-4cf6-947a-d82fb4d2277c
 with
 calculated_hacker_challenges as (
     select

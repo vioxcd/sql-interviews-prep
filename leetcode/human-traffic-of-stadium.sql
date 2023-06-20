@@ -1,7 +1,7 @@
 -- Link: https://leetcode.com/problems/human-traffic-of-stadium/
 -- Level: Hard
 -- Description: Write an SQL query to display the records with three or more rows with consecutive id's, and the number of people is greater than or equal to 100 for each. Return the result table ordered by visit_date in ascending order.
--- Result: https://github.com/vioxcd/sql-interviews-prep/assets/31486724/0fffaecc-1f19-4255-8e2d-55ccacfe66f0
+-- Result: https://github.com/vioxcd/sql-interviews-prep/assets/31486724/8424a10d-ac7d-414b-b852-24a95124b641
 WITH
 filtered AS (
     SELECT
